@@ -3,7 +3,11 @@ import Test.HUnit
 import qualified System.Exit as Exit
 
 test1 :: Test
-test1 = TestCase (assertEqual "should return 3" 3 (add 1 2))
+test1 = TestCase (assertEqual "should return 3 (Int)" (3 :: Int) (add (1 :: Int) (2 :: Int)))
+
+-- Double 型での add 関数のテスト
+testAddDouble :: Test
+testAddDouble = TestCase (assertEqual "should return 3.0 (Double)" (3.0 :: Double) (add (1.5 :: Double) (1.5 :: Double)))
 
 -- クイックソートのテストケース
 quickSortTestEmpty :: Test
@@ -21,7 +25,8 @@ quickSortTestRandom = TestCase (assertEqual "for random list" ([1, 1, 2, 3, 4, 5
 -- 全テストをまとめる
 tests :: Test
 tests = TestList [
-    TestLabel "add test" test1,
+    TestLabel "add test (Int)" test1,
+    TestLabel "add test (Double)" testAddDouble,
     TestLabel "quicksort empty" quickSortTestEmpty,
     TestLabel "quicksort sorted" quickSortTestSorted,
     TestLabel "quicksort reverse" quickSortTestReverse,

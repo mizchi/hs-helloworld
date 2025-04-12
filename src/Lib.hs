@@ -1,5 +1,5 @@
 module Lib (add, quicksort) where
-add :: Int -> Int -> Int
+add :: (Num a) => a -> a -> a
 add x y = x + y
 
 -- クイックソート関数
