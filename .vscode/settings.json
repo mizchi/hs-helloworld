@@ -1,0 +1,8 @@
+{
+  "haskell.manageHLS": "GHCup",
+  "haskell.toolchain": {
+    "ghc": "9.10.1",
+    "hls": "2.9.0.1",
+    "cabal": "3.14.2.0"
+  }
+}
