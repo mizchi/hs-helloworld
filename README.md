@@ -31,9 +31,8 @@ https://marketplace.visualstudio.com/items?itemName=haskell.haskell
 $ cabal run
 $ cabal test
 
-## format modules
-$ cabal install cabal-gild
-$ cabal-gild --io helloworld.cabal
+# format with gild
+$ cabal exec -- cabal-gild --io helloworld.cabal
 ```
 
 ## LICENSE
