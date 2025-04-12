@@ -19,7 +19,8 @@ $ ghcup set ghc 9.10.1
 
 # checkout cabal
 $ curl -s -L https://stackage.org/lts/cabal.config -o cabal.project.freeze
-$ cabal build
+$ cabal update
+$ cabal freeze
 ```
 
 https://marketplace.visualstudio.com/items?itemName=haskell.haskell
