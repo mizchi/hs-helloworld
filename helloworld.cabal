@@ -1,7 +1,4 @@
 cabal-version: 2.2
--- This file has been generated from package.yaml by hpack version 0.38.0.
---
--- see: https://github.com/sol/hpack
 name: helloworld
 version: 0.1.0.0
 description: wip
@@ -45,8 +42,17 @@ library
 
   build-depends:
     base >=4.20 && <5,
+    -- JSON parsing
+    aeson ^>= 2.2,
+    -- HTTP client
+    req ^>= 3.13,
+    -- Text manipulation
+    text ^>= 2.1,
+    -- URI parsing
+    modern-uri ^>= 0.3,
+    -- For try/catch
+    exceptions,
     cabal-gild,
-
   build-tool-depends: cabal-gild:cabal-gild >=1.6.0.0
   default-language: Haskell2010
 
@@ -72,6 +78,10 @@ executable helloworld-exe
   build-depends:
     base >=4.20 && <5,
     helloworld,
+    req ^>= 3.13,
+    aeson ^>= 2.2,
+    text ^>= 2.1,
+    bytestring ^>= 0.11,
 
   default-language: Haskell2010
 
@@ -105,5 +115,15 @@ test-suite helloworld-test
     HUnit ^>=1.6,
     base >=4.20 && <5,
     helloworld,
+    -- JSON parsing
+    aeson ^>= 2.2,
+    -- HTTP client
+    req ^>= 3.13,
+    -- Text manipulation
+    text ^>= 2.1,
+    -- URI parsing
+    modern-uri ^>= 0.3,
+    -- For try/catch
+    exceptions,
 
   default-language: Haskell2010
