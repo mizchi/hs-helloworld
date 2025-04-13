@@ -4,14 +4,25 @@
 
 module Lib
   ( Todo (..),
-    fetchTodo,
-    quicksort,
     FetchError (..), -- Export the FetchError type
+    -- Async operations
+    fetchTodo,
+    waitFetchResult,
+    concurrentFetch,
+    concurrentFetch2,
+    fetchWithTimeout,
   )
 where
 
+import Control.Concurrent (threadDelay)
+-- Async imports
+import Control.Concurrent.Async
+  ( Async,
+    async,
+    race,
+    wait,
+  )
 import Control.Exception (SomeException, try)
-import Control.Monad.IO.Class (MonadIO, liftIO)
 import qualified Data.Aeson as Aeson
 import Data.List (intercalate)
 import Data.Maybe (fromMaybe)
@@ -103,16 +114,16 @@ parseUrl url = do
 
           return (isHttps, host, path, port, url)
 
--- | Fetches a Todo item from the specified URL string.
--- Returns Either FetchError Todo: Right Todo on success, Left FetchError on failure.
-fetchTodo :: (MonadIO m) => String -> m (Either FetchError Todo)
-fetchTodo urlString = do
+-- | 内部関数: 実際のHTTPリクエストを実行する
+-- この関数は非同期処理のために内部で使用される
+doFetchTodo :: String -> IO (Either FetchError Todo)
+doFetchTodo urlString = do
   case parseUrl urlString of
     Nothing -> do
       return $ Left $ InvalidUrlFormat urlString
     Just (isHttps, host, path, port, _) -> do
       -- Perform the HTTP GET request and handle potential exceptions
-      result <- liftIO $ try $ Req.runReq Req.defaultHttpConfig $ do
+      result <- try $ Req.runReq Req.defaultHttpConfig $ do
         -- Split the path into segments and remove empty segments
         let pathSegments = filter (not . null) $ splitString "/" (drop 1 path)
 
@@ -168,10 +179,49 @@ isInfixOf needle haystack = any (isPrefixOf needle) (tails haystack)
     isPrefixOf _ [] = False
     isPrefixOf (x : xs) (y : ys) = x == y && isPrefixOf xs ys
 
--- | クイックソート関数
-quicksort :: (Ord a) => [a] -> [a]
-quicksort [] = []
-quicksort (x : xs) =
-  let smallerSorted = quicksort [a | a <- xs, a <= x]
-      biggerSorted = quicksort [a | a <- xs, a > x]
-   in smallerSorted ++ [x] ++ biggerSorted
+-- | 非同期でTodoを取得する関数
+-- JavaScriptのasyncに相当する機能を提供します
+fetchTodo :: String -> IO (Async (Either FetchError Todo))
+fetchTodo url = async $ do
+  putStrLn $ "非同期処理開始: " ++ url
+  result <- doFetchTodo url
+  putStrLn $ "非同期処理完了: " ++ url
+  return result
+
+-- | 非同期処理の結果を待つ関数
+-- JavaScriptのawaitに相当する機能を提供します
+waitFetchResult :: Async (Either FetchError Todo) -> IO (Either FetchError Todo)
+waitFetchResult = wait
+
+-- | 複数のURLから並行してTodoを取得する関数
+-- 全ての結果が揃うまで待ちます
+concurrentFetch :: [String] -> IO [Either FetchError Todo]
+concurrentFetch urls = do
+  -- 全てのURLに対して非同期処理を開始
+  asyncResults <- mapM fetchTodo urls
+  -- 全ての結果が揃うまで待つ
+  mapM waitFetchResult asyncResults
+
+-- | 2つのURLから並行してTodoを取得し、両方の結果を返す関数
+concurrentFetch2 :: String -> String -> IO (Either FetchError Todo, Either FetchError Todo)
+concurrentFetch2 url1 url2 = do
+  -- 両方のURLに対して非同期処理を開始し、両方の結果を待つ
+  asyncResult1 <- fetchTodo url1
+  asyncResult2 <- fetchTodo url2
+  result1 <- waitFetchResult asyncResult1
+  result2 <- waitFetchResult asyncResult2
+  return (result1, result2)
+
+-- | タイムアウト付きでTodoを取得する関数
+-- 指定した時間（マイクロ秒）を超えた場合はタイムアウトエラーを返します
+fetchWithTimeout :: Int -> String -> IO (Either FetchError Todo)
+fetchWithTimeout timeoutMicros url = do
+  -- 非同期処理を開始
+  asyncResult <- fetchTodo url
+  -- タイムアウト処理を設定
+  let timeout = threadDelay timeoutMicros >> return (Left $ NetworkError "Timeout exceeded")
+  -- タイムアウトと非同期処理のレースを実行
+  result <- race timeout (waitFetchResult asyncResult)
+  case result of
+    Left err -> return err -- タイムアウトした場合
+    Right fetchResult -> return fetchResult -- 正常に取得できた場合

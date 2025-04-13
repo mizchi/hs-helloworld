@@ -19,6 +19,7 @@ source-repository head
 library
   exposed-modules:
     Lib
+    Sort
 
   other-modules:
     Paths_helloworld
@@ -39,24 +40,25 @@ library
     -Wmissing-home-modules
     -Wpartial-fields
     -Wredundant-constraints
-
   build-depends:
-    base >=4.20 && <5,
     -- JSON parsing
-    aeson ^>= 2.2,
-    -- HTTP client
-    req ^>= 3.13,
-    -- Text manipulation
-    text ^>= 2.1,
-    -- URI parsing
-    modern-uri ^>= 0.3,
+    aeson ^>=2.2,
+    -- For async operations
+    async ^>=2.2,
+    -- Base library
+    base >=4.20 && <5,
     -- For try/catch
     exceptions,
-    cabal-gild,
+    -- HTTP client
+    req ^>=3.13,
+    -- Text manipulation
+    text ^>=2.1,
+
   build-tool-depends:
     cabal-gild:cabal-gild >=1.6.0.0,
-    ormolu:ormolu >= 0.8.0.0,
-    hlint:hlint >= 3.8.0.0,
+    hlint:hlint >=3.8.0.0,
+    ormolu:ormolu >=0.8.0.0,
+
   default-language: Haskell2010
 
 executable helloworld-exe
@@ -79,12 +81,12 @@ executable helloworld-exe
     -with-rtsopts=-N
 
   build-depends:
+    -- Base library
     base >=4.20 && <5,
+    -- Main library
     helloworld,
-    req ^>= 3.13,
-    aeson ^>= 2.2,
-    text ^>= 2.1,
-    bytestring ^>= 0.11,
+    -- Text manipulation
+    text ^>=2.1,
 
   default-language: Haskell2010
 
@@ -93,6 +95,7 @@ test-suite helloworld-test
   main-is: Spec.hs
   other-modules:
     Paths_helloworld
+    SortSpec
 
   autogen-modules:
     Paths_helloworld
@@ -115,18 +118,17 @@ test-suite helloworld-test
     -with-rtsopts=-N
 
   build-depends:
+    -- Testing
     HUnit ^>=1.6,
-    base >=4.20 && <5,
-    helloworld,
     -- JSON parsing
-    aeson ^>= 2.2,
-    -- HTTP client
-    req ^>= 3.13,
-    -- Text manipulation
-    text ^>= 2.1,
-    -- URI parsing
-    modern-uri ^>= 0.3,
+    aeson ^>=2.2,
+    -- Base library
+    base >=4.20 && <5,
     -- For try/catch
     exceptions,
+    -- Main library
+    helloworld,
+    -- Text manipulation
+    text ^>=2.1,
 
   default-language: Haskell2010
