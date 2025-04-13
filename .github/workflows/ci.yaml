@@ -31,7 +31,6 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Build
-        run: make build
-      - name: Run tests
-        run: make test
+      - run: make build
+      - run: make check
+      - run: make test
