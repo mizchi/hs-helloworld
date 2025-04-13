@@ -12,20 +12,20 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-haskell@v1
         with:
           ghc-version: "9.10.1"
           cabal-version: "3.14.2.0"
-
       - name: Cache
         uses: actions/cache@v3
         env:
           cache-name: cache-cabal
         with:
-          path: ~/.cabal
+          path: |
+            ~/.cabal
+            dist-newstyle
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
