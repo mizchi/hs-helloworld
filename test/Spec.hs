@@ -1,11 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-
--- Import FetchError type
-
--- Need runReq for tests
--- For conditional assertion failure
-
 import Control.Monad (unless) -- For conditional assertion failure
 import Lib
   ( FetchError (..),

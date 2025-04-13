@@ -40,6 +40,11 @@ library
     -Wmissing-home-modules
     -Wpartial-fields
     -Wredundant-constraints
+
+  default-extensions:
+    OverloadedStrings
+    ScopedTypeVariables
+
   build-depends:
     -- JSON parsing
     aeson ^>=2.2,
@@ -79,6 +84,11 @@ executable helloworld-exe
     -threaded
     -rtsopts
     -with-rtsopts=-N
+
+  default-extensions:
+    OverloadedStrings
+    ScopedTypeVariables
+
   build-depends:
     -- Base library
     base >=4.20 && <5,
@@ -115,9 +125,16 @@ test-suite helloworld-test
     -threaded
     -rtsopts
     -with-rtsopts=-N
+
+  default-extensions:
+    OverloadedStrings
+    ScopedTypeVariables
+
   build-depends:
     -- Testing
     HUnit ^>=1.6,
+    -- Property-based testing
+    QuickCheck ==2.15.0.1,
     -- JSON parsing
     aeson ^>=2.2,
     -- Base library
@@ -149,6 +166,10 @@ executable examples
     -threaded
     -rtsopts
     -with-rtsopts=-N
+
+  default-extensions:
+    OverloadedStrings
+    ScopedTypeVariables
 
   build-depends:
     -- Base library

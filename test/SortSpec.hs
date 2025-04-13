@@ -1,11 +1,9 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module SortSpec (sortTests) where
 
-import Control.Monad (unless)
+import Data.List (sort)
 import Sort (mergesort, quicksort)
 import Test.HUnit
+import Test.QuickCheck
 
 -- | ソート関数のテスト用データ
 testData :: [Int]
@@ -94,6 +92,48 @@ testStringsList = TestCase $ do
   assertEqual "quicksort strings list" sortedStringsData result1
   assertEqual "mergesort strings list" sortedStringsData result2
 
+-- | QuickCheck を使ったプロパティテスト
+
+-- | ソート後のリストは昇順になっているかをテストするプロパティ
+prop_isSorted :: ([Int] -> [Int]) -> [Int] -> Bool
+prop_isSorted sortFunc xs = isSorted (sortFunc xs)
+  where
+    isSorted [] = True
+    isSorted [_] = True
+    isSorted (x : y : xs) = x <= y && isSorted (y : xs)
+
+-- | ソート後のリストの長さは元のリストと同じかをテストするプロパティ
+prop_sameLength :: ([Int] -> [Int]) -> [Int] -> Bool
+prop_sameLength sortFunc xs = length (sortFunc xs) == length xs
+
+-- | ソート後のリストには元のリストと同じ要素が含まれているかをテストするプロパティ
+-- | （順序を無視して要素の出現回数が同じかをテスト）
+prop_sameElements :: ([Int] -> [Int]) -> [Int] -> Bool
+prop_sameElements sortFunc xs = sort (sortFunc xs) == sort xs
+
+-- | ソート操作を2回適用しても結果は変わらないかをテストするプロパティ
+prop_idempotent :: ([Int] -> [Int]) -> [Int] -> Bool
+prop_idempotent sortFunc xs = sortFunc (sortFunc xs) == sortFunc xs
+
+-- | QuickCheck テストを実行する関数
+runQuickCheckTests :: Test
+runQuickCheckTests = TestCase $ do
+  putStrLn "\nRunning QuickCheck tests..."
+
+  -- quicksort のプロパティテスト
+  putStrLn "Testing quicksort properties:"
+  quickCheck (prop_isSorted quicksort)
+  quickCheck (prop_sameLength quicksort)
+  quickCheck (prop_sameElements quicksort)
+  quickCheck (prop_idempotent quicksort)
+
+  -- mergesort のプロパティテスト
+  putStrLn "Testing mergesort properties:"
+  quickCheck (prop_isSorted mergesort)
+  quickCheck (prop_sameLength mergesort)
+  quickCheck (prop_sameElements mergesort)
+  quickCheck (prop_idempotent mergesort)
+
 -- | ソートのテストリスト
 sortTests :: Test
 sortTests =
@@ -105,5 +145,6 @@ sortTests =
       TestLabel "random list" testRandomList,
       TestLabel "duplicates list" testDuplicatesList,
       TestLabel "negatives list" testNegativesList,
-      TestLabel "strings list" testStringsList
+      TestLabel "strings list" testStringsList,
+      TestLabel "quickcheck tests" runQuickCheckTests
     ]
