@@ -48,6 +48,48 @@ $ cabal test
 $ cabal exec -- cabal-gild --io helloworld.cabal
 ```
 
+## Examples
+
+このプロジェクトには、Haskellの基本的な言語機能を学ぶためのサンプルコードが含まれています。
+サンプルコードは `examples` ディレクトリに配置されています。
+
+### サンプルの実行方法
+
+```bash
+# 全てのサンプルを実行
+$ cabal run examples -- all
+
+# 基本的な型と関数のサンプルを実行
+$ cabal run examples -- basic
+
+# リスト操作と高階関数のサンプルを実行
+$ cabal run examples -- list
+
+# モナドのサンプルを実行
+$ cabal run examples -- monad
+```
+
+### サンプルの内容
+
+1. **BasicTypes.hs** - 基本的な型と関数の定義、パターンマッチング
+   - データ型の定義と使用方法
+   - パターンマッチングの基本
+   - 再帰関数の実装
+   - 型クラスの定義と実装
+
+2. **ListFunctions.hs** - リスト操作と高階関数
+   - リスト生成関数
+   - map、filter、foldの実装
+   - リスト内包表記
+   - 高階関数の使用例
+   - 部分適用と関数合成
+
+3. **Monads.hs** - モナドの基本
+   - Maybeモナド
+   - Eitherモナド
+   - IOモナド
+   - 独自モナドの実装
+
 ## LICENSE
 
 MIT
