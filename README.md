@@ -25,6 +25,19 @@ $ cabal freeze
 
 https://marketplace.visualstudio.com/items?itemName=haskell.haskell
 
+Optional: Set your ormolu path
+
+```jsonc
+{
+  // vscode ormolu can not use env var like $HOME
+  "ormolu.path": "/home/mizchi/.cabal/bin/ormolu",
+  "[haskell]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "sjurmillidahl.ormolu-vscode"
+  }
+}
+```
+
 ## Dev
 
 ```bash

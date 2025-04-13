@@ -5,6 +5,11 @@
     "hls": "2.9.0.1",
     "cabal": "3.14.2.0"
   },
-  "ormolu.path": "~/.cabal/bin/ormolu",
-  "editor.defaultFormatter": "sjurmillidahl.ormolu-vscode"
+  "ormolu.args": ["--no-cabal"],
+  "ormolu.path": "/home/mizchi/.cabal/bin/ormolu",
+  "[haskell]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "sjurmillidahl.ormolu-vscode"
+  },
+  "indentRainbow.ignoreErrorLanguages": ["markdown", "haskell"]
 }
